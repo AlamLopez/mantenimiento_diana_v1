@@ -1,0 +1,690 @@
+<template>
+    <!-- Contenido Principal -->
+    <main class="main">
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item"><a href="#">Admin</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+        <div class="container-fluid">
+            <!-- Ejemplo de tabla Listado -->
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    <i class="fa fa-align-justify"></i> ESTADO DEL MANTENIMIENTO DE LOS VEHÍCULOS
+                </div>
+                <div class="card-body">
+                    <template v-if="loading">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="form-control col-md-3" id="opcion" name="opcion">
+                                        <option value="idavl">ID AVL</option>
+                                        <option value="nombre">NOMBRE</option>
+                                        <option value="placa">PLACA</option>
+                                        <option value="modelo">MODELO</option>
+                                        <option value="color">COLOR</option>
+                                    </select>
+                                    <input type="text" id="texto" name="texto" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group input-daterange">
+                                    <select class="form-control col-md-6">
+                                        <option>ODÓMETRO ACTUAL</option>
+                                        <option>ODÓMETRO ALERTA</option>
+                                    </select>                            
+                                    <div class="input-group-addon bg-primary">DESDE</div>
+                                    <input type="number" class="form-control">
+                                    <div class="input-group-addon bg-primary">HASTA</div>
+                                    <input type="number" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group input-daterange">
+                                    <div class="input-group-addon bg-primary">TIPO MANTO</div>
+                                    <select class="form-control col-md-8">
+                                        <option value="">TODOS</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group input-daterange">
+                                    <div class="input-group-addon bg-primary">TALLER</div>
+                                    <select class="form-control col-md-8">
+                                        <option value="">TODOS</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-responsive table-bordered table-striped table-sm">
+                            <thead>
+                                <tr class="bg-primary">
+                                    <th style="text-align: center;">OPCIONES</th>
+                                    <th style="text-align: center;">ID AVL</th>
+                                    <th style="text-align: center;">NOMBRE</th>
+                                    <th style="text-align: center;">PLACA</th>
+                                    <th style="text-align: center;">FLOTA</th>
+                                    <th style="text-align: center;">MODELO</th>
+                                    <th style="text-align: center;">COLOR</th>
+                                    <th style="text-align: center;">ODO. ACTUAL</th>
+                                    <th style="text-align: center;">ODO. ALERTA</th>
+                                    <th style="text-align: center;">TIPO MANTO.</th>
+                                    <th style="text-align: center;">TALLER</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center;" class="align-middle">
+                                        <button @click="cambiar(0)" type="button" class="btn btn-primary btn-sm">
+                                            <i class="icon-eye"></i>
+                                        </button> &nbsp;
+                                        <button type="button" @click="abrirModal('mantenimiento', 'registrar')" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalNuevo">
+                                            <i class="icon-plus"></i>
+                                        </button> &nbsp;
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalInfo">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td style="text-align: center;" class="align-middle">Equipos</td>
+                                    <td style="text-align: center;" class="align-middle">Dispositivos electrónicos</td>
+                                    <td style="text-align: center;" class="align-middle">
+                                        <span class="badge badge-success">Activo</span>
+                                    </td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Ant</a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">3</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">4</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </template>
+                    <template v-else>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <button @click="loading=true" class="btn btn-primary"><i class="fa fa-back"></i> VOLVER</button>
+                            </div>
+                        </div>
+                        <table class="table table-responsive table-bordered table-striped table-sm">
+                            <thead>
+                                <tr class="bg-primary">
+                                    <th style="text-align: center;">OPCIONES</th>
+                                    <th style="text-align: center;">ESTADO</th>
+                                    <th style="text-align: center;">MANTENIMIENTO ASIGNADO</th>
+                                    <th style="text-align: center;">CANTIDAD</th>
+                                    <th style="text-align: center;">UNIDAD DE MEDIDA</th>
+                                    <th style="text-align: center;">ASIGNADO</th>
+                                    <th style="text-align: center;">TRAB EXTRA</th>
+                                    <th style="text-align: center;">TRAB NORMAL</th>
+                                    <th style="text-align: center;">TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center;" class="align-middle">
+                                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalEliminar">
+                                            <i class="icon-plus"></i>
+                                        </button> &nbsp;
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalDetalle">
+                                            <i class="icon-info"></i>
+                                        </button> &nbsp;
+                                    </td>
+                                    <td style="text-align: center;" class="align-middle">Equipos</td>
+                                    <td style="text-align: center;" class="align-middle">Dispositivos electrónicos</td>
+                                    <td style="text-align: center;" class="align-middle">
+                                        <span class="badge badge-success">Activo</span>
+                                    </td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    <td style="text-align: center;" class="align-middle"></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Ant</a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">3</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">4</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </template>
+                </div>
+            </div>
+            <!-- Fin ejemplo de tabla Listado -->
+        </div>
+        <!--Inicio del modal agregar/actualizar-->
+        <div class="modal fade" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-primary modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" v-text="tituloModal"></h4>
+                        <button type="button" @click="cerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <div class="form-group row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-primary"><i class="icon-refresh"></i>  &nbsp; REFRESCAR ODÓMETRO</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">FECHA:</label>
+                                <div class="col-md-9">
+                                    <input type="date" v-model="fecha" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">HORA:</label>
+                                <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text="hora">16:41 pm</label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">VEHÍCULO:</label>
+                                <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text="vehiculo"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">ODO SW INICIAL:</label>
+                                <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text="odoswinicial"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">ODO HW INICIAL:</label>
+                                <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text=odohwinicial></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">TALLER (*):</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="taller1">
+                                        <option value="">SELECCIONE UN TALLER</option>
+                                        <option v-for="taller in arrayTaller" :key="taller.id" :value="taller.nombre" v-text="taller.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">TIPO MANTENIMIENTO (*):</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="tipomanto1">
+                                        <option value="">SELECCIONE UN TIPO DE MANTENIMIENTO</option>
+                                        <option v-for="tipomanto in arrayTipomanto" :key="tipomanto.id" :value="tipomanto.nombre" v-text="tipomanto.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">CANTIDAD:</label>
+                                <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text="cantidad"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">UNIDAD DE MEDIDA:</label>
+                                <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text="umedida"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">CORREO ALERTA:</label>
+                                <div class="col-md-9">
+                                    <input type="email" v-model="correoalerta" class="form-control" placeholder="INGRESE UN CORREO PARA ALERTAS">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">ENVIO DE ALERTA NARANJA:</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="alertanaranja">
+                                        <option value="">SELECCIONE UNA OPCIÓN</option>
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">ENVIO DE ALERTA PROXIMA A VENCER:</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="alertaproxima">
+                                        <option value="">SELECCIONE UNA OPCIÓN</option>
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">ENVIO DE ALERTA ROJA (VENCIDO):</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="alertaroja">
+                                        <option value="">SELECCIONE UNA OPCIÓN</option>
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">RECORDATORIO DIARIO (POR VENCERSE):</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="recordatorioporven">
+                                        <option value="">SELECCIONE UNA OPCIÓN</option>
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">RECORDATORIO DIARIO (VENCIDO):</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="recordatorioven">
+                                        <option value="">SELECCIONE UNA OPCIÓN</option>
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="email-input">PORCENTAJE ALERTA POR VENCERSE:</label>
+                                <div class="col-md-9">
+                                    <input type="number" v-model="porcentajealerta" class="form-control" placeholder="INGRESE UN PORCENTAJE DE ALERTAS">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="cerrarModal()" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+                        <button type="button" class="btn btn-primary">GUARDAR</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!--Fin del modal-->
+        <!-- Inicio del modal Eliminar -->
+        <!--div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-primary" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">DETALLE DEL MANTENIMIENTO</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">ESTADO:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">TALLER NOMBRE:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">ENVIO ALERTAS:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">OBSERVACIONES:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">INICIO MANTO:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">FECHA MOD:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">HORA MOD:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-3 form-control-label" for="text-input"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+                    </div>
+                </div-->
+                <!-- /.modal-content -->
+            <!--/div-->
+            <!-- /.modal-dialog -->
+        <!--/div-->
+        <!-- Fin del modal Eliminar -->
+        <!-- Inicio del modal Detalle -->
+        <!--div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-primary" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">DETALLE DE COSTOS POR ITEM</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <h5>No hay registros para mostrar</h5>
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+                    </div>
+                </div-->
+                <!-- /.modal-content -->
+            <!--/div-->
+            <!-- /.modal-dialog -->
+        <!--/div-->
+        <!-- Fin del modal Eliminar -->
+    </main>
+    <!-- /Fin del contenido principal -->
+</template>
+
+<script>
+    export default {
+
+        data (){
+
+            return {
+
+                tabla : 1,
+                prueba : '',
+                loading : true,
+                arrayTaller : [],
+                arrayTipomanto : [],
+                fecha : '',
+                hora : '',
+                vehiculo : '',
+                odoswinicial : '',
+                odohwinicial : '',
+                taller1 : '',
+                tipomanto1 : '',
+                cantidad : '',
+                umedida : '',
+                correoalerta : '',
+                alertanaranja : '',
+                alertaproxima : '',
+                alertaroja : '',
+                recordatorioporven : '',
+                recordatorioven : '',
+                porcentajealerta:  '',
+                modal : 0,
+                tituloModal : '',
+                tipoAccion: 0,
+                errorMantenimiento : 0,
+                errorMostrarMsjMantenimiento : [],
+                pagination : {
+                    'total' : 0,
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                offset : 3,
+                criterio : 'nombre',
+                buscar : ''
+
+            }
+
+        },
+
+        computed : {
+
+            isActived : function(){
+                return this.pagination.current_page;
+            },
+
+            pagesNumber: function() {
+
+                if(!this.pagination.to) {
+                    return [];
+                }
+
+                var from = this.pagination.current_page - this.offset;
+
+                if(from < 1) {
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
+                }
+
+                var pagesArray = [];
+
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+
+                return pagesArray;
+
+            }
+
+        },
+
+        methods : {
+
+            selectTaller(){
+
+                let me = this;
+                var url = '/talleres/selectTaller';
+                
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayTaller = respuesta.talleres;
+                    console.log(response);
+
+                })
+                .catch(function (error) {
+                    
+                    console.log(error);
+
+                })
+
+            },
+
+            selectTipomanto(){
+
+                let me = this;
+                var url = '/tipomantos/selectTipomanto';
+                
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayTipomanto = respuesta.tipomantos;
+                    console.log(response);
+
+                })
+                .catch(function (error) {
+                    
+                    console.log(error);
+
+                })
+
+            },
+
+            abrirModal(modelo, accion, data = []){
+
+                this.selectTaller();
+                this.selectTipomanto();
+
+                switch (modelo) {
+
+                    case 'mantenimiento':
+                        
+                        {
+
+                            switch (accion) {
+                                
+                                case 'registrar':
+                                    {
+                                        this.modal = 1;
+                                        this.tituloModal = 'INGRESO DE ASIGNACIÓN DE MANTENIMIENTO A LOS VEHÍCULOS'
+                                        this.nombre = '';
+                                        this.email = '';
+                                        this.nombre_completo = '';
+                                        this.password = '';
+                                        this.tipoAccion = 1;
+                                        break;
+                                    }
+                            
+                            }
+
+                        }
+                        
+                }
+            },
+
+            cerrarModal(){
+
+                this.modal = 0;
+                this.tituloModal = '';
+                this.nombre = '';
+                this.nombre_completo = '';
+                this.email = '';
+                this.id_rol = 0;
+                this.password = '';
+                this.user_id = 0;
+                this.distribuidora = {
+                    id : 0,
+                    nombre : ''
+                };
+                this.arrayRol = [];
+                this.arrayDistribuidora = [];
+                this.distribuidoras = [];
+                this.errorUsuario = 0;
+                this.errorMostrarMsjUsuario = [];
+            },
+
+        },
+
+        mounted() {
+            console.log('Component mounted.')
+        }
+    }
+</script>
+
+<style>
+
+    .modal-content{
+
+        width: 100% !important;
+        position: absolute !important;
+
+    }
+
+    .mostrar{
+
+        display: list-item !important;
+        opacity: 1 !important;
+        position: absolute !important;
+        background-color: #3c29297a !important;
+
+    }
+
+    .div-error{
+
+        display: flex;
+        justify-content: center;
+
+    }
+
+    .text-error{
+        color: red !important;
+        font-weight: bold;
+    }
+
+    .pagination > li > a{
+        background-color: white;
+        color: #d96465 !important;
+    }
+
+    .pagination > li > a:focus,
+    .pagination > li > a:hover,
+    .pagination > li > span:focus,
+    .pagination > li > span:hover{
+        color: #d96465 !important;
+        background-color: #eee !important;
+        border-color: #ddd !important;
+    }
+
+    .pagination > .active > a{
+        color: white !important;
+        background-color: #d96465 !important;
+        border: solid 1px #d96465 !important;
+    }
+
+    .pagination > .active > a:hover{
+        background-color: #d96465 !important;
+        border: solid 1px #d96465 !important;
+    }
+
+</style>
